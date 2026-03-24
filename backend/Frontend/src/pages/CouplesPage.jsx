@@ -97,9 +97,29 @@ export default function CouplesPage() {
 
   const updateP1 = (k, v) => setP1(prev => ({ ...prev, [k]: v }));
   const updateP2 = (k, v) => setP2(prev => ({ ...prev, [k]: v }));
+  const parseAmount = (value) => {
+    if (!value) return 0;
+    return Number(value.toString().replace(/,/g, ''));
+  };
+
+  const calcDeductions = (p) => {
+    const epf = parseAmount(p.epf);
+    const elss = parseAmount(p.elss);
+    const ppf = parseAmount(p.ppf);
+    const life = parseAmount(p.lifeInsurance);
+    const homePrincipal = parseAmount(p.homeLoanPrincipal);
+
+    const total80C = Math.min(epf + elss + ppf + life + homePrincipal, 150000);
+
+    const nps = Math.min(parseAmount(p.nps), 50000);
+    const health = Math.min(parseAmount(p.healthInsurance), 25000);
+    const interest = Math.min(parseAmount(p.homeLoanInterest), 200000);
+
+    return total80C + nps + health + interest;
+  };
 
   const calcTax = (income, regime = 'new') => {
-    const inc = Number(income) || 0;
+    const inc = parseAmount(income);
     if (regime === 'new') {
       if (inc <= 300000) return 0;
       if (inc <= 700000) return (inc - 300000) * 0.05;
@@ -114,23 +134,34 @@ export default function CouplesPage() {
     return 112500 + (inc - 1000000) * 0.3;
   };
 
+
   const analyzeResults = () => {
-    const income1 = Number(p1.income) || 0;
-    const income2 = Number(p2.income) || 0;
+    const income1 = parseAmount(p1.income) 
+    const income2 = parseAmount(p2.income) 
+
+    const deductions1 = calcDeductions(p1);
+    const deductions2 = calcDeductions(p2);
+
+    const taxableOld1 = Math.max(income1 - deductions1 - 50000, 0);
+    const taxableOld2 = Math.max(income2 - deductions2 - 50000, 0);
+
+    const taxOld1 = calcTax(taxableOld1, 'old');
+    const taxOld2 = calcTax(taxableOld2, 'old');
+
     const taxNew1 = calcTax(income1, 'new');
-    const taxOld1 = calcTax(income1, 'old');
     const taxNew2 = calcTax(income2, 'new');
-    const taxOld2 = calcTax(income2, 'old');
 
     return {
       combined: income1 + income2,
-      tax1New: taxNew1, tax1Old: taxOld1,
-      tax2New: taxNew2, tax2Old: taxOld2,
-      savings: Math.max(taxOld1 - taxNew1, 0) + Math.max(taxOld2 - taxNew2, 0),
+      tax1New: taxNew1,
+      tax1Old: taxOld1,
+      tax2New: taxNew2,
+      tax2Old: taxOld2,
+      savings: (taxOld1 + taxOld2) - (taxNew1 + taxNew2),
       regimeAdvice1: taxNew1 < taxOld1 ? 'New Regime' : 'Old Regime',
-      regimeAdvice2: taxNew2 < taxOld2 ? 'New Regime' : 'Old Regime',
+      regimeAdvice2: taxNew2 < taxOld2 ? 'New Regime' : 'Old Regime'
     };
-  };
+    };
 
   const handleAnalyze = async () => {
     if (!p1.income && !p2.income) { setError('Please enter income for at least one partner.'); return; }
@@ -138,34 +169,41 @@ export default function CouplesPage() {
     setStep('loading');
 
     try {
-      const prompt = `Analyse this Indian couple's financial situation and provide comprehensive joint financial planning advice:
+      const prompt = `
+        You are India's top financial planner.
 
-**${p1.name || 'Partner 1'}:**
-- Annual CTC: ₹${p1.income || 0}
-- HRA Received: ₹${p1.hra || 0}/year | Rent Paid: ₹${p1.rent || 0}/year
-- EPF: ₹${p1.epf || 0} | ELSS: ₹${p1.elss || 0} | PPF: ₹${p1.ppf || 0}
-- Life Insurance: ₹${p1.lifeInsurance || 0} | NPS (80CCD1B): ₹${p1.nps || 0}
-- Health Insurance: ₹${p1.healthInsurance || 0} | Home Loan Interest: ₹${p1.homeLoanInterest || 0}
-- Home Loan Principal: ₹${p1.homeLoanPrincipal || 0} | Monthly EMIs: ₹${p1.loans || 0}
+        Analyze this couple's financial situation and optimize across both partners.
 
-**${p2.name || 'Partner 2'}:**
-- Annual CTC: ₹${p2.income || 0}
-- HRA Received: ₹${p2.hra || 0}/year | Rent Paid: ₹${p2.rent || 0}/year
-- EPF: ₹${p2.epf || 0} | ELSS: ₹${p2.elss || 0} | PPF: ₹${p2.ppf || 0}
-- Life Insurance: ₹${p2.lifeInsurance || 0} | NPS (80CCD1B): ₹${p2.nps || 0}
-- Health Insurance: ₹${p2.healthInsurance || 0} | Home Loan Interest: ₹${p2.homeLoanInterest || 0}
-- Home Loan Principal: ₹${p2.homeLoanPrincipal || 0} | Monthly EMIs: ₹${p2.loans || 0}
+        Goals:
+        - minimize combined tax
+        - maximize deductions
+        - optimize investments
 
-Please provide:
-1. **Tax Regime Recommendation** — Old vs New for each partner with exact savings
-2. **HRA Optimization** — Who should claim, how much
-3. **80C Strategy** — How to split ₹1.5L limit optimally between partners
-4. **NPS Strategy** — Should both invest? How much each?
-5. **SIP Split Recommendation** — Monthly SIP amounts and fund categories for each partner
-6. **Insurance Gap Analysis** — Life and health insurance adequacy
-7. **Home Loan Tax Benefits** — Joint vs individual optimization
-8. **Combined Net Worth Building Plan** — 5-year roadmap
-9. **Top 5 Immediate Action Items** — Ranked by tax savings impact`;
+        Partner 1:
+        Income ₹${p1.income}
+        HRA ₹${p1.hra}
+        Rent ₹${p1.rent}
+        80C investments ₹${p1.epf + p1.elss + p1.ppf}
+
+        Partner 2:
+        Income ₹${p2.income}
+        HRA ₹${p2.hra}
+        Rent ₹${p2.rent}
+        80C investments ₹${p2.epf + p2.elss + p2.ppf}
+
+        Provide structured sections:
+
+        1. Tax regime recommendation
+        2. HRA optimization strategy
+        3. 80C redistribution between partners
+        4. NPS strategy
+        5. Monthly SIP plan
+        6. Insurance coverage gaps
+        7. 5-year wealth roadmap
+        8. Top 5 actions ranked by impact
+
+        Be concise and practical.
+        `;
 
       const response = await callGemini(prompt, COUPLES_SYSTEM);
       setResult(response);
@@ -192,7 +230,7 @@ Please provide:
   ];
 
   return (
-    <div style={{ padding: 'clamp(20px, 4vw, 40px)', maxWidth: 1000, animation: 'fadeIn 0.5s ease' }}>
+    <div style={{ padding: 'clamp(20px, 4vw, 40px)', animation: 'fadeIn 0.5s ease' }}>
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <div className="tag tag-coral" style={{ marginBottom: 14 }}>

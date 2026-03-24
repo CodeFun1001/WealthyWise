@@ -125,7 +125,7 @@ ${toAnalyze}`;
   ];
 
   return (
-    <div style={{ padding: 'clamp(20px, 4vw, 40px)', maxWidth: 960, animation: 'fadeIn 0.5s ease' }}>
+    <div style={{ padding: 'clamp(20px, 4vw, 40px)', animation: 'fadeIn 0.5s ease' }}>
       {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <div className="tag tag-gold" style={{ marginBottom: 14 }}>

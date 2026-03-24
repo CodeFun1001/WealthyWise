@@ -38,7 +38,7 @@ export default function Dashboard({ setActivePage }) {
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   return (
-    <div style={{ padding: 'clamp(20px, 4vw, 40px)', maxWidth: 900, animation: 'fadeIn 0.5s ease' }}>
+    <div style={{ padding: 'clamp(20px, 4vw, 40px)', animation: 'fadeIn 0.5s ease' }}>
 
       {/* Hero greeting */}
       <div style={{ marginBottom: 40 }}>

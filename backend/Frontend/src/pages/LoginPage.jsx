@@ -1,27 +1,51 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { TrendingUp, Shield, Zap, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { FcGoogle } from "react-icons/fc";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile
+} from 'firebase/auth';
+import { auth } from '../firebase'
 
 export default function LoginPage() {
-  const { login } = useAuth();
-  const [mode, setMode] = useState('login'); // 'login' | 'signup'
+  const { login,loginWithGoogle } = useAuth();
+  const [mode, setMode] = useState('login'); 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    if (!email || !password) { setError('Please fill all fields.'); return; }
-    if (mode === 'signup' && !name) { setError('Please enter your name.'); return; }
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 800));
-    login(email, mode === 'signup' ? name : email.split('@')[0]);
+  if (!email || !password) { setError('Please fill all fields.'); return; }
+  if (mode === 'signup' && !name) { setError('Please enter your name.'); return; }
+
+  setLoading(true);
+  try {
+    if (mode === 'login') {
+      await signInWithEmailAndPassword(auth, email, password);
+    } else {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: name }); 
+    }
+  } catch (err) {
+    const msgs = {
+      'auth/user-not-found': 'No account found with this email.',
+      'auth/wrong-password': 'Incorrect password.',
+      'auth/email-already-in-use': 'This email is already registered.',
+      'auth/weak-password': 'Password must be at least 6 characters.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+    };
+    setError(msgs[err.code] || 'Something went wrong. Please try again.');
+  } finally {
     setLoading(false);
-  };
+  }
+};
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', position: 'relative', overflow: 'hidden' }}>
@@ -37,7 +61,7 @@ export default function LoginPage() {
         flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
         padding: '60px', position: 'relative', zIndex: 1
       }} className="hide-mobile">
-        <div style={{ maxWidth: 480 }}>
+        <div style={{ maxWidth: 580 }}>
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 60 }}>
             <div style={{
@@ -95,11 +119,11 @@ export default function LoginPage() {
 
       {/* Right panel - form */}
       <div style={{
-        width: '100%', maxWidth: 480, display: 'flex', alignItems: 'center',
+        width: '100%', maxWidth: 580, display: 'flex', alignItems: 'center',
         justifyContent: 'center', padding: '40px 40px', position: 'relative', zIndex: 1,
         borderLeft: '1px solid var(--border)'
       }}>
-        <div style={{ width: '100%', maxWidth: 400, animation: 'fadeIn 0.5s ease' }}>
+        <div style={{ width: '100%', maxWidth: 450, animation: 'fadeIn 0.5s ease' }}>
           {/* Mobile logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40 }}>
             <div style={{
@@ -204,13 +228,43 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div style={{ marginTop: 24, textAlign: 'center' }}>
-            <button onClick={() => {
-              login('demo@et.com', 'Demo User');
-            }} className="btn-ghost" style={{ width: '100%', justifyContent: 'center', color: 'var(--gold)' }}>
-              Try with Demo Account →
-            </button>
+           <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            marginBottom: 18,
+            marginTop: 18
+          }}>
+            <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+            <span style={{ fontSize: "0.75rem", color: "var(--text-faint)" }}>
+              or continue with Google
+            </span>
+            <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
           </div>
+          
+          <button
+            onClick={loginWithGoogle}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              padding: "12px",
+              borderRadius: 10,
+              border: "1px solid var(--border)",
+              background: "var(--surface-2)",
+              color: "var(--text)",
+              fontWeight: 600,
+              fontSize: "0.9rem",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              marginBottom: 18
+            }}
+          >
+            <FcGoogle size={20} />
+            Continue with Google
+          </button>
 
           <p style={{ textAlign: 'center', marginTop: 28, fontSize: '0.75rem', color: 'var(--text-faint)', lineHeight: 1.6 }}>
             By continuing, you agree to our Terms of Service and Privacy Policy. Your financial data is encrypted and never shared.
