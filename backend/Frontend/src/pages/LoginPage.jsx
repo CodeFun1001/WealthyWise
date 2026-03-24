@@ -49,10 +49,10 @@ export default function LoginPage() {
             </div>
             <div>
               <div style={{ fontFamily: 'var(--font-body)', fontWeight: 800, fontSize: '1.1rem', color: 'var(--text)', letterSpacing: '-0.02em' }}>
-                AI Money Mentor
+                Wealthy Wise
               </div>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                by Economic Times
+                AI Money Mentor
               </div>
             </div>
           </div>

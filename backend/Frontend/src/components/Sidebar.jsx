@@ -26,10 +26,10 @@ export default function Sidebar({ activePage, setActivePage }) {
           </div>
           <div>
             <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--text)', lineHeight: 1.2 }}>
-              Money Mentor
+              Wealthy Wise
             </div>
             <div style={{ fontSize: '0.65rem', color: 'var(--gold)', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 600 }}>
-              Powered by ET
+              AI Money Mentor
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function Sidebar({ activePage, setActivePage }) {
           }}>
             <TrendingUp size={16} color="var(--ink)" strokeWidth={2.5} />
           </div>
-          <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Money Mentor</span>
+          <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Wealthy Wise</span>
         </div>
         <button onClick={() => setMobileOpen(!mobileOpen)} style={{
           background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text)', padding: 4
