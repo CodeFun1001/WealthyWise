@@ -47,7 +47,9 @@ function parseAndBuildCharts(portfolioText) {
     }
     if (line.includes('Market Value') && currentScheme) {
       const match = line.match(/₹([\d,]+)/);
-      if (match) currentScheme.value = parseInt(match[1].replace(/,/g, ''));
+      if (match) {
+        currentScheme.value = Number(match[1].replace(/,/g, ''));
+      }
     }
   });
   if (currentScheme) schemes.push(currentScheme);
@@ -77,25 +79,46 @@ export default function PortfolioPage() {
     setPortfolioText(toAnalyze);
 
     const charts = parseAndBuildCharts(toAnalyze);
+    
+    if (charts.length === 0) {
+      setError("Could not detect funds. Please paste CAMS format.");
+      setStep("input");
+      return;
+    }
     setChartData(charts);
 
     try {
-      const prompt = `Analyze this Indian mutual fund portfolio statement and provide:
+      const prompt = `
+        Analyze this Indian mutual fund portfolio.
 
-1. **Portfolio Summary** — Total value, number of schemes, investment style
-2. **XIRR Estimate** — Based on typical market performance for these fund categories
-3. **Overlap Analysis** — Which funds have high stock overlap (especially large cap funds)
-4. **Expense Ratio Assessment** — Compare Direct vs Regular plans, drag on returns
-5. **Benchmark Comparison** — How each category fund likely performs vs its benchmark
-6. **Risk Assessment** — Concentration risk, sector exposure, market cap allocation
-7. **Rebalancing Recommendations** — Specific actionable steps (what to consolidate, what to add)
-8. **Tax Efficiency** — LTCG implications, harvesting opportunities
+        Provide short structured insights:
 
-Portfolio Data:
-${toAnalyze}`;
+        ### Portfolio Summary
+        Total value, number of funds, style.
+
+        ### Risk Analysis
+        Diversification, market cap exposure.
+
+        ### Key Issues
+        Overlap or concentration problems.
+
+        ### Recommendations
+        What to rebalance or consolidate.
+
+        ### Tax Insight
+        LTCG impact and tax optimization.
+
+        Portfolio Data:
+        ${toAnalyze}
+
+        Rules:
+        • Bullet points only
+        • Maximum 120 words
+        • Use ₹ and Indian number format
+        `;
 
       const response = await callGemini(prompt, PORTFOLIO_SYSTEM);
-      setResult(response);
+      setResult(response || "AI could not generate analysis. Try again.");
       setStep('results');
     } catch (err) {
       setError('Gemini API error: ' + err.message + '. Please add your VITE_GEMINI_API_KEY.');
@@ -106,13 +129,10 @@ ${toAnalyze}`;
   const formatMarkdown = (text) => {
     return text
       .replace(/###\s(.+)/g, '<h3>$1</h3>')
-      .replace(/##\s(.+)/g, '<h3>$1</h3>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/^-\s(.+)/gm, '<li>$1</li>')
+      .replace(/^- (.*)$/gm, '<li>$1</li>')
       .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
-      .replace(/\n\n/g, '</p><p>')
-      .replace(/^(?!<[hul])/gm, '')
-      .split('\n').map(line => line.trim()).join('');
+      .replace(/\n/g, '<br/>');
   };
 
   const total = chartData.reduce((s, d) => s + d.value, 0);
