@@ -1,0 +1,52 @@
+{
+  "profiles": [
+    {
+      "_label": "Arjun Sharma · Software Engineer · Mumbai · ₹12L CTC",
+      "gross_salary": 1200000,
+      "hra_received": 240000,
+      "rent_paid": 180000,
+      "is_metro": true,
+      "epf": 72000,
+      "elss": 50000,
+      "ppf": 0,
+      "lic": 15000,
+      "home_principal": 0,
+      "nps_80ccd1b": 0,
+      "health_insurance_80d": 12000,
+      "home_loan_interest": 0,
+      "tds_deducted": 95000
+    },
+    {
+      "_label": "Priya Menon · Teacher · Bangalore · ₹8L CTC",
+      "gross_salary": 800000,
+      "hra_received": 120000,
+      "rent_paid": 96000,
+      "is_metro": true,
+      "epf": 48000,
+      "elss": 0,
+      "ppf": 60000,
+      "lic": 25000,
+      "home_principal": 0,
+      "nps_80ccd1b": 50000,
+      "health_insurance_80d": 20000,
+      "home_loan_interest": 0,
+      "tds_deducted": 28000
+    },
+    {
+      "_label": "Rahul Verma · Manager · Pune · ₹18L CTC (Home Loan)",
+      "gross_salary": 1800000,
+      "hra_received": 0,
+      "rent_paid": 0,
+      "is_metro": false,
+      "epf": 108000,
+      "elss": 42000,
+      "ppf": 0,
+      "lic": 0,
+      "home_principal": 120000,
+      "nps_80ccd1b": 50000,
+      "health_insurance_80d": 25000,
+      "home_loan_interest": 180000,
+      "tds_deducted": 230000
+    }
+  ]
+}

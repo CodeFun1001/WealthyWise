@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import LoginPage    from './pages/LoginPage';
-import Dashboard    from './pages/Dashboard';
+
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
 import PortfolioPage from './pages/PortfolioPage';
-import CouplesPage  from './pages/CouplesPage';
-import FirePage     from './pages/Fire';
-import Sidebar      from './components/Sidebar';
-import Chatbot      from './components/Chatbot';
+import CouplesPage from './pages/CouplesPage';
+import FirePage from './pages/Fire';
+import TaxWizardPage from './pages/TaxWizardPage';
+
+import Sidebar from './components/Sidebar';
+import Chatbot from './components/Chatbot';
 
 function AppContent() {
   const { user } = useAuth();
@@ -17,9 +20,9 @@ function AppContent() {
   const pages = {
     dashboard: <Dashboard setActivePage={setActivePage} />,
     portfolio: <PortfolioPage />,
-    couples:   <CouplesPage />,
-    fire:      <FirePage />,
-    // 'tax' page wired up — add TaxPage import when ready
+    couples: <CouplesPage />,
+    fire: <FirePage />,
+    tax : <TaxWizardPage />,
   };
 
   return (
