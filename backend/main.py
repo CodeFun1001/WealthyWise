@@ -28,6 +28,6 @@ app.add_middleware(
 app.include_router(tax_router, prefix="/api/tax")
 
 
-@app.get("/health")   
+@app.get("/")   
 async def health():
     return {"status": "ok", "version": "1.0.0"}
