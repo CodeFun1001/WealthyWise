@@ -7,6 +7,7 @@ import PortfolioPage from './pages/PortfolioPage';
 import CouplesPage from './pages/CouplesPage';
 import FirePage from './pages/Fire';
 import TaxWizardPage from './pages/TaxWizardPage';
+import MoneyHealthScore from './pages/MoneyHealthScore';  // ← ADD THIS
 
 import Sidebar from './components/Sidebar';
 import Chatbot from './components/Chatbot';
@@ -20,9 +21,10 @@ function AppContent() {
   const pages = {
     dashboard: <Dashboard setActivePage={setActivePage} />,
     portfolio: <PortfolioPage />,
-    couples: <CouplesPage />,
-    fire: <FirePage />,
-    tax : <TaxWizardPage />,
+    couples:   <CouplesPage />,
+    fire:      <FirePage />,
+    tax:       <TaxWizardPage />,
+    health:    <MoneyHealthScore />,             // ← ADD THIS
   };
 
   return (
@@ -30,7 +32,6 @@ function AppContent() {
       <Sidebar activePage={activePage} setActivePage={setActivePage} />
 
       <main style={{ flex: 1, overflow: 'auto', background: 'var(--ink)', position: 'relative' }}>
-        {/* Ambient glow */}
         <div style={{
           position: 'fixed', top: -200, right: -200, width: 600, height: 600,
           background: 'radial-gradient(circle, rgba(245,166,35,0.04) 0%, transparent 70%)',
@@ -41,7 +42,6 @@ function AppContent() {
         </div>
       </main>
 
-      {/* Floating AI chatbot — always available */}
       <Chatbot />
 
       <style>{`

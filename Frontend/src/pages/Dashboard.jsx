@@ -1,8 +1,19 @@
 import React from 'react';
-import { TrendingUp, PieChart, Heart, ArrowRight, Sparkles, Calculator, Target, Zap, Flame } from 'lucide-react';
+import { TrendingUp, PieChart, Heart, ArrowRight, Sparkles, Calculator, Target, Zap, Flame, Activity } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const features = [
+  {
+    id: 'health',
+    icon: <Activity size={26} />,
+    title: 'Money Health Score',
+    desc: 'Get a comprehensive financial wellness score across 6 dimensions: emergency fund, insurance, investments, debt, tax efficiency, and retirement. Includes AI Roast Mode, What-If Simulator, and a personalised fix plan.',
+    color: 'var(--teal)',
+    colorDim: 'var(--teal-dim)',
+    tag: 'Start Here',
+    stats: '5-min check',
+    highlight: true,
+  },
   {
     id: 'portfolio',
     icon: <PieChart size={26} />,
@@ -64,11 +75,7 @@ export default function Dashboard({ setActivePage }) {
         <div className="tag tag-gold" style={{ marginBottom: 16 }}>
           <Sparkles size={12} /> AI-Powered Financial Planning
         </div>
-        <h1 style={{
-          fontFamily: 'var(--font-display)', fontStyle: 'italic',
-          fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.2,
-          color: 'var(--text)', marginBottom: 12,
-        }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'clamp(2rem, 4vw, 3rem)', lineHeight: 1.2, color: 'var(--text)', marginBottom: 12 }}>
           {greeting}, {user?.name?.split(' ')[0]}.
         </h1>
         <p style={{ color: 'var(--text-dim)', fontSize: '1.05rem', lineHeight: 1.65, maxWidth: 520 }}>
@@ -77,85 +84,58 @@ export default function Dashboard({ setActivePage }) {
       </div>
 
       {/* Stats bar */}
-      <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 1, background: 'var(--border)', borderRadius: 16,
-        overflow: 'hidden', marginBottom: 40, border: '1px solid var(--border)',
-      }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--border)', borderRadius: 16, overflow: 'hidden', marginBottom: 40, border: '1px solid var(--border)' }}>
         {stats.map((s, i) => (
           <div key={i} style={{ padding: '20px 24px', background: 'var(--surface-2)', textAlign: 'center' }}>
-            <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: 'clamp(1.4rem, 3vw, 1.8rem)',
-              fontWeight: 700, color: 'var(--gold)', lineHeight: 1.1, marginBottom: 4,
-            }}>{s.value}</div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(1.4rem, 3vw, 1.8rem)', fontWeight: 700, color: 'var(--gold)', lineHeight: 1.1, marginBottom: 4 }}>{s.value}</div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)', lineHeight: 1.4 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
+      {/* CTA — Money Health Score highlight */}
+      <div style={{ marginBottom: 28, padding: '22px 28px', background: 'linear-gradient(135deg, var(--teal-dim), rgba(6,214,160,0.04))', border: '1px solid rgba(6,214,160,0.25)', borderRadius: 'var(--radius)', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap', cursor: 'pointer' }} onClick={() => setActivePage('health')}>
+        <div style={{ width: 52, height: 52, borderRadius: 14, background: 'var(--teal-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Activity size={26} color="var(--teal)" />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 4 }}>✨ Recommended First Step</div>
+          <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text)', marginBottom: 4 }}>Check your Money Health Score</div>
+          <div style={{ fontSize: '0.84rem', color: 'var(--text-dim)' }}>5-minute check · 6-dimension score · AI roast + fix plan · What-If simulator</div>
+        </div>
+        <button className="btn-primary" style={{ background: 'linear-gradient(135deg, var(--teal), #059669)', whiteSpace: 'nowrap' }}>
+          Get My Score <ArrowRight size={15} />
+        </button>
+      </div>
+
       {/* Feature cards */}
       <div style={{ marginBottom: 16 }}>
-        <h2 style={{
-          fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-faint)',
-          textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16,
-        }}>
-          Available Features
+        <h2 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16 }}>
+          All Features
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
           {features.map(f => (
             <button
               key={f.id}
               onClick={() => setActivePage(f.id)}
-              style={{
-                all: 'unset', cursor: 'pointer', display: 'block',
-                background: 'var(--surface)', border: '1px solid var(--border)',
-                borderRadius: 'var(--radius)', padding: '26px',
-                transition: 'all 0.3s ease', position: 'relative', overflow: 'hidden',
-                textAlign: 'left',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = f.color;
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = `0 12px 40px ${f.colorDim}`;
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'var(--border)';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
+              style={{ all: 'unset', cursor: 'pointer', display: 'block', background: 'var(--surface)', border: `1px solid ${f.highlight ? f.color + '33' : 'var(--border)'}`, borderRadius: 'var(--radius)', padding: '26px', transition: 'all 0.3s ease', position: 'relative', overflow: 'hidden', textAlign: 'left' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = f.color; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 12px 40px ${f.colorDim}`; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = f.highlight ? f.color + '33' : 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
             >
-              {/* Corner glow */}
-              <div style={{
-                position: 'absolute', top: 0, right: 0, width: 200, height: 200,
-                background: `radial-gradient(circle, ${f.colorDim} 0%, transparent 70%)`,
-                borderRadius: '50%', transform: 'translate(50%, -50%)',
-              }} />
+              <div style={{ position: 'absolute', top: 0, right: 0, width: 200, height: 200, background: `radial-gradient(circle, ${f.colorDim} 0%, transparent 70%)`, borderRadius: '50%', transform: 'translate(50%, -50%)' }} />
 
-              <div style={{
-                width: 50, height: 50, borderRadius: 14,
-                background: f.colorDim, color: f.color,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                marginBottom: 18, position: 'relative',
-              }}>
+              <div style={{ width: 50, height: 50, borderRadius: 14, background: f.colorDim, color: f.color, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18, position: 'relative' }}>
                 {f.icon}
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, color: f.color, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  {f.tag}
-                </span>
+                <span style={{ fontSize: '0.7rem', fontWeight: 700, color: f.color, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{f.tag}</span>
                 <span style={{ width: 3, height: 3, borderRadius: '50%', background: 'var(--text-faint)' }} />
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' }}>
-                  {f.stats}
-                </span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-faint)', fontFamily: 'var(--font-mono)' }}>{f.stats}</span>
               </div>
 
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text)', marginBottom: 10 }}>
-                {f.title}
-              </h3>
-              <p style={{ color: 'var(--text-dim)', fontSize: '0.86rem', lineHeight: 1.65, marginBottom: 20 }}>
-                {f.desc}
-              </p>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text)', marginBottom: 10 }}>{f.title}</h3>
+              <p style={{ color: 'var(--text-dim)', fontSize: '0.86rem', lineHeight: 1.65, marginBottom: 20 }}>{f.desc}</p>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: f.color, fontSize: '0.86rem', fontWeight: 600 }}>
                 Open Feature <ArrowRight size={14} />
@@ -166,16 +146,12 @@ export default function Dashboard({ setActivePage }) {
       </div>
 
       {/* Trust bar */}
-      <div style={{
-        marginTop: 40, padding: '20px 24px',
-        background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-        display: 'flex', gap: 32, flexWrap: 'wrap', justifyContent: 'space-around',
-      }}>
+      <div style={{ marginTop: 40, padding: '20px 24px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', display: 'flex', gap: 32, flexWrap: 'wrap', justifyContent: 'space-around' }}>
         {[
-          { icon: <Zap size={15} />,        text: 'AI Powered Portfolio Analysis' },
-          { icon: <Calculator size={15} />, text: 'Smart Tax Optimizer (Old vs New Regime)' },
-          { icon: <Flame size={15} />,      text: 'FIRE Retirement Planner' },
-          { icon: <PieChart size={15} />,   text: 'Mutual Fund Portfolio Health Check' },
+          { icon: <Activity size={15} />,     text: 'Money Health Score — 6 Dimensions' },
+          { icon: <Zap size={15} />,          text: 'AI Portfolio Analysis' },
+          { icon: <Calculator size={15} />,   text: 'Smart Tax Optimizer' },
+          { icon: <Flame size={15} />,        text: 'FIRE Retirement Planner' },
         ].map((item, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-dim)', fontSize: '0.82rem' }}>
             <span style={{ color: 'var(--teal)' }}>{item.icon}</span>
