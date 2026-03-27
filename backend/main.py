@@ -18,7 +18,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://wealthywise-g12r57o9h-shailysahu1972006-7172s-projects.vercel.app/",
+        "https://wealthywise-fl5wpnskd-shailysahu1972006-7172s-projects.vercel.app/",
     ],
     allow_credentials=True,
     allow_methods=["*"],
