@@ -29,7 +29,6 @@ export async function callGemini(prompt, systemInstruction = '') {
   const data = await res.json();
 
   const parts = data.candidates?.[0]?.content?.parts || [];
-  console.log(data);
   return parts.map(p => p.text).join('');
 }
 

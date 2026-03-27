@@ -866,9 +866,48 @@ Use **bold** for all numbers. Reference their specific income bracket. Keep unde
                   { name: 'New Regime', tax: Math.round((tc.new_regime?.total_tax || 0) / 1000) },
                 ]} barSize={52}>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                  <XAxis dataKey="name" tick={{ fill: 'var(--text-dim)', fontSize: 12, fontWeight: 600 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: 'var(--text-dim)', fontSize: 11 }} tickFormatter={v => `₹${v}K`} axisLine={false} tickLine={false} />
-                  <Tooltip formatter={v => [`₹${v}K`, 'Tax']} contentStyle={{ background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 10 }} />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: 'var(--text-dim)', fontSize: 12, fontWeight: 600 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    tick={{ fill: 'var(--text-dim)', fontSize: 11 }}
+                    tickFormatter={v => `₹${v}K`}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip
+                    cursor={{ fill: 'rgba(255,255,255,0.04)', radius: 8 }}
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null;
+                      const isWinner = (label === 'Old Regime' && tc.better_regime === 'old') ||
+                                      (label === 'New Regime' && tc.better_regime === 'new');
+                      const accentColor = isWinner ? 'var(--teal)' : 'var(--coral)';
+                      return (
+                        <div style={{
+                          background: 'var(--surface-2)',
+                          border: `1px solid ${isWinner ? 'rgba(6,214,160,0.35)' : 'rgba(239,71,111,0.35)'}`,
+                          borderRadius: 10,
+                          padding: '10px 14px',
+                          boxShadow: isWinner ? 'var(--glow-teal)' : '0 0 20px rgba(239,71,111,0.15)',
+                        }}>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-faint)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+                            {label}
+                          </div>
+                          <div style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '1.05rem', color: accentColor }}>
+                            ₹{payload[0].value}K
+                          </div>
+                          {isWinner && (
+                            <div style={{ fontSize: '0.66rem', color: 'var(--teal)', marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <CheckCircle size={10} /> Better for you
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }}
+                  />
                   <Bar dataKey="tax" radius={[7, 7, 0, 0]}>
                     <Cell fill={tc.better_regime === 'old' ? 'var(--teal)' : 'var(--coral)'} />
                     <Cell fill={tc.better_regime === 'new' ? 'var(--teal)' : 'var(--coral)'} />
