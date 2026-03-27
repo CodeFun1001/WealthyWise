@@ -12,26 +12,11 @@ import {
 } from 'recharts';
 import { callGemini } from '../utils/gemini';
 
-/* ─── API base ─────────────────────────────────────────────────────────────── */
 const API_BASE = import.meta.env.VITE_API_BASE || '';
-
-/* ═══════════════════ ACCURATE FY 2024-25 TAX ENGINE ══════════════════════════
-   Rules verified against Finance Act 2024 & Budget 2024:
-   • Old regime std deduction: ₹50,000
-   • New regime std deduction: ₹75,000 (raised from ₹50K in Budget 2024)
-   • Old regime 87A rebate: full rebate if TAXABLE INCOME ≤ ₹5L
-   • New regime 87A rebate: full rebate if TAXABLE INCOME ≤ ₹7L
-   • New regime slabs: 0-3L=0%, 3-7L=5%, 7-10L=10%, 10-12L=15%, 12-15L=20%, >15L=30%
-   • Old regime slabs: 0-2.5L=0%, 2.5-5L=5%, 5-10L=20%, >10L=30%
-   • Cess: 4% on tax (after rebate)
-   • New regime: NO deductions (80C, 80D, NPS, HRA, home interest all disallowed)
-   • Old regime: All deductions allowed
-   ════════════════════════════════════════════════════════════════════════════ */
 
 const parseAmt = v => Number(String(v || 0).replace(/,/g, '')) || 0;
 
 function calcOldRegime(gross, totalDed, hra, rent, metro) {
-  // HRA exemption: min(actual HRA, rent - 10% basic, 50%/40% of basic)
   const basic = gross * 0.40;
   const hraEx = (hra > 0 && rent > 0)
     ? Math.max(0, Math.min(hra, rent - basic * 0.1, basic * (metro ? 0.5 : 0.4)))
@@ -41,7 +26,6 @@ function calcOldRegime(gross, totalDed, hra, rent, metro) {
     taxable > 1000000 ? 112500 + (taxable - 1000000) * 0.30 :
     taxable > 500000  ? 12500  + (taxable - 500000)  * 0.20 :
     taxable > 250000  ? (taxable - 250000) * 0.05 : 0;
-  // 87A: full rebate if taxable ≤ ₹5L
   const rebate = taxable <= 500000;
   if (rebate) rawTax = 0;
   const totalTax = Math.round(rawTax * 1.04);
@@ -57,7 +41,6 @@ function calcOldRegime(gross, totalDed, hra, rent, metro) {
 }
 
 function calcNewRegime(gross) {
-  // New regime: ONLY std deduction ₹75K allowed (Budget 2024)
   const taxable = Math.max(gross - 75000, 0);
   let rawTax =
     taxable > 1500000 ? 140000 + (taxable - 1500000) * 0.30 :
@@ -65,7 +48,6 @@ function calcNewRegime(gross) {
     taxable > 1000000 ? 50000  + (taxable - 1000000) * 0.15 :
     taxable > 700000  ? 20000  + (taxable - 700000)  * 0.10 :
     taxable > 300000  ? (taxable - 300000) * 0.05 : 0;
-  // 87A: full rebate if taxable ≤ ₹7L
   const rebate = taxable <= 700000;
   if (rebate) rawTax = 0;
   const totalTax = Math.round(rawTax * 1.04);
@@ -616,11 +598,10 @@ Mention the specific reason (deduction level, slab benefit, etc.) with exact num
       const missed = result.deduction_suggestions || [];
       const tds = parseAmt(data.tds) || 0;
 
-      // Generate AI advice in parallel
       setLoadingStage('Generating personalized AI analysis…');
       const [adviceText, whyText] = await Promise.all([
         callGemini(buildAdvicePrompt(gross, tc.old_regime, tc.new_regime, tc.better_regime, tc.savings_by_better, missed, tds, tc.hra_exemption_old))
-          .catch(() => '> _AI advice unavailable. Please set VITE_GEMINI_API_KEY in your .env file._'),
+          .catch(() => '> _AI advice unavailable.'),
         callGemini(buildRegimeWhyPrompt(gross, tc.old_regime, tc.new_regime, tc.better_regime))
           .catch(() => ''),
       ]);

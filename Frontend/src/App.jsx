@@ -24,7 +24,7 @@ function AppContent() {
     couples:   <CouplesPage />,
     fire:      <FirePage />,
     tax:       <TaxWizardPage />,
-    health:    <MoneyHealthScore />,             // ← ADD THIS
+    health:    <MoneyHealthScore />,          
   };
 
   return (

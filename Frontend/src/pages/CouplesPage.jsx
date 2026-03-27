@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, Users, TrendingUp, DollarSign, Zap, ArrowRight, RotateCcw, CheckCircle } from 'lucide-react';
+import { Heart, Users, Zap, RotateCcw } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, PieChart, Pie, Cell } from 'recharts';
 import { callGemini, COUPLES_SYSTEM } from '../utils/gemini';
 
