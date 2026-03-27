@@ -12,7 +12,7 @@ import {
 } from 'recharts';
 import { callGemini } from '../utils/gemini';
 
-const API_BASE = import.meta.env.VITE_API_BASE || '';
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const parseAmt = v => Number(String(v || 0).replace(/,/g, '')) || 0;
 
@@ -261,25 +261,6 @@ function DeductionsPanel({ data, set }) {
           <Field label="Home Loan Interest (Max ₹2L)" placeholder="0" value={data.homeInterest} onChange={set('homeInterest')} hint="Sec 24(b) — Old regime only" />
         </div>
       </Collapse>
-    </div>
-  );
-}
-
-function OverrideCollapse({ data, set, hint }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div>
-      <button onClick={() => setOpen(o => !o)} style={{ all: 'unset', cursor: 'pointer', width: '100%', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '1px solid var(--border)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <SlidersHorizontal size={13} color="var(--text-dim)" />
-          <div>
-            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text)' }}>Override / Add Deductions</div>
-            <div style={{ fontSize: '0.67rem', color: 'var(--text-faint)' }}>{hint}</div>
-          </div>
-        </div>
-        {open ? <ChevronUp size={13} color="var(--text-faint)" /> : <ChevronDown size={13} color="var(--text-faint)" />}
-      </button>
-      {open && <div style={{ paddingTop: 14 }}><DeductionsPanel data={data} set={set} /></div>}
     </div>
   );
 }
@@ -740,7 +721,6 @@ Use **bold** for all numbers. Reference their specific income bracket. Keep unde
               </div>
             )}
 
-            {/* ── PDF ── */}
             {inputMode === 'pdf' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                 <div
@@ -767,10 +747,6 @@ Use **bold** for all numbers. Reference their specific income bracket. Keep unde
                     </div>
                   )}
                 </div>
-                <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-                  <IncomePanel data={data} set={set} />
-                  <OverrideCollapse data={data} set={set} hint="Override extracted values or add missing deductions" />
-                </div>
                 {error && <ErrorBanner msg={error} />}
                 <AnalyseButton onClick={analyze} disabled={!pdfFile} />
                 <FooterNote />
@@ -793,8 +769,6 @@ Use **bold** for all numbers. Reference their specific income bracket. Keep unde
                     />
                     {pdfText && <div style={{ marginTop: 5, fontSize: '0.69rem', color: 'var(--teal)', display: 'flex', alignItems: 'center', gap: 5 }}><CheckCircle size={11} /> {pdfText.split(/\s+/).filter(Boolean).length} words detected — ready</div>}
                   </div>
-                  <IncomePanel data={data} set={set} />
-                  <OverrideCollapse data={data} set={set} hint="Override if AI extraction misses any deductions" />
                 </div>
                 {error && <ErrorBanner msg={error} />}
                 <AnalyseButton onClick={analyze} disabled={!pdfText.trim()} />
