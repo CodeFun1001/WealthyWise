@@ -1,10 +1,4 @@
-"""
-backend/api/tax.py
-FastAPI router for Tax Wizard:
-  POST /api/tax/analyze   — main analysis (PDF or manual JSON)
-  POST /api/tax/news      — news impact only
-  GET  /api/tax/sample    — return sample data for frontend "Load Sample" button
-"""
+
 import json
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from fastapi.responses import JSONResponse
