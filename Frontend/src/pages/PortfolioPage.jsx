@@ -63,7 +63,7 @@ function parseAndBuildCharts(portfolioText) {
 }
 
 export default function PortfolioPage() {
-  const [step, setStep] = useState('input'); // input | analyzing | results
+  const [step, setStep] = useState('input');
   const [portfolioText, setPortfolioText] = useState('');
   const [result, setResult] = useState('');
   const [chartData, setChartData] = useState([]);
@@ -267,7 +267,7 @@ export default function PortfolioPage() {
           </div>
 
           {activeTab === 'overview' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
               {/* Pie chart */}
               <div className="card">
                 <h3 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: 16, color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>

@@ -7,7 +7,7 @@ import PortfolioPage from './pages/PortfolioPage';
 import CouplesPage from './pages/CouplesPage';
 import FirePage from './pages/Fire';
 import TaxWizardPage from './pages/TaxWizardPage';
-import MoneyHealthScore from './pages/MoneyHealthScore';  // ← ADD THIS
+import MoneyHealthScore from './pages/MoneyHealthScore';  
 
 import Sidebar from './components/Sidebar';
 import Chatbot from './components/Chatbot';

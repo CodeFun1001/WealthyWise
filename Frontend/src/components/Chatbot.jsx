@@ -57,7 +57,6 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      // Build Gemini-format history (last 10 turns to stay within limits)
       const history = msgs
         .slice(-10)
         .map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.text }] }));

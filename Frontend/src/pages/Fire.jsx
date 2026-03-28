@@ -93,11 +93,15 @@ const PURPLE_DIM = 'rgba(167,139,250,0.13)';
 
 export default function FirePage() {
   const [form, setForm] = useState({
-    age: '28', retireAge: '45', monthlyExp: '60000', existingCorpus: '500000',
-    monthlySavings: '40000', risk: 'moderate',
-    goals: 'Travel annually, fund kids education, buy a home by 35',
+    age: '',
+    retireAge: '',
+    monthlyExp: '',
+    existingCorpus: '',
+    monthlySavings: '',
+    risk: 'moderate',
+    goals: '',
   });
-  const [step, setStep]       = useState('input'); // input | loading | results
+  const [step, setStep]       = useState('input'); 
   const [result, setResult]   = useState('');
   const [calcs, setCalcs]     = useState(null);
   const [err, setErr]         = useState('');
