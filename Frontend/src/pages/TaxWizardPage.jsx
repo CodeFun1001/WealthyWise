@@ -14,7 +14,6 @@ import { callGemini } from '../utils/gemini';
 
 const parseAmt = v => Number(String(v || 0).replace(/,/g, '')) || 0;
 
-/* ─── Deduction helper (always needed for utilisation bars) ─────────────────── */
 function calcDeductions(d) {
   const sec80C  = Math.min(parseAmt(d.epf) + parseAmt(d.elss) + parseAmt(d.ppf) + parseAmt(d.lic) + parseAmt(d.homePrincipal), 150000);
   const nps     = Math.min(parseAmt(d.nps), 50000);
@@ -23,11 +22,6 @@ function calcDeductions(d) {
   return { sec80C, nps, health, homeInt, total: sec80C + nps + health + homeInt };
 }
 
-/* ─── Main tax calculators ───────────────────────────────────────────────────
-   When called from PDF/text mode, taxableIncomeOverride and ay are set so we
-   use the correct FY slabs and the employer-computed taxable income.
-   When called from manual mode, we compute taxable income from scratch.
-   ─────────────────────────────────────────────────────────────────────────── */
 function calcOldRegime(gross, ded, hraExemption, stdDed, ay, taxableIncomeOverride) {
   const taxable = taxableIncomeOverride > 0
     ? taxableIncomeOverride
@@ -62,7 +56,6 @@ function calcNewRegime(gross, ay, taxableIncomeOverride) {
   };
 }
 
-/* ─── Manual-mode HRA formula (used when no PDF) ────────────────────────── */
 function computeHraExemption(gross, hra, rent, metro) {
   if (!hra || !rent) return 0;
   const basic = gross * 0.40;
@@ -263,7 +256,6 @@ function newRegimeStdDedForAY(ay) {
   return 75000;                    // FY24-25+ ₹75K
 }
 
-/* ═══════════════════════ MARKDOWN RENDERER ════════════════════════════════== */
 function renderMarkdown(text = '') {
   if (!text) return '';
   const lines = text.split('\n');
@@ -321,7 +313,6 @@ const MD_CSS = `
 .md-hr { border: none; border-top: 1px solid var(--border); margin: 0.75rem 0; }
 `;
 
-/* ─── UI atoms ──────────────────────────────────────────────────────────────── */
 function Field({ label, placeholder, value, onChange, prefix = '₹', hint, readOnly }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -567,7 +558,6 @@ export default function TaxWizardPage() {
   const set = k => v => setData(p => ({ ...p, [k]: v }));
   const loadSample = idx => { setData({ ...DEFAULT, ...SAMPLES[idx] }); setInputMode('manual'); };
 
-  /* ── Live preview (manual mode only, always FY 2024-25) ── */
   const livePreview = (inputMode === 'manual' && parseAmt(data.gross) > 0) ? (() => {
     const g   = parseAmt(data.gross);
     const ded = calcDeductions(data);
@@ -784,7 +774,6 @@ July 31, 2025. Penalty: ₹5,000 (income > ₹5L). Interest: 1%/month. 3 urgent 
 
   const tc = results?.tax_comparison;
 
-  /* ══════════════════════════════ RENDER ══════════════════════════════════ */
   return (
     <>
       <style>{MD_CSS}</style>
