@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 
 const navItems = [
   { id: 'dashboard', icon: <TrendingUp size={19} />, label: 'Dashboard',          tag: null   },
-  { id: 'health',    icon: <Activity size={19} />,   label: 'Money Health Score', tag: 'NEW'  },
+  { id: 'health',    icon: <Activity size={19} />,   label: 'Money Health Score', tag: 'AI'  },
   { id: 'portfolio', icon: <PieChart size={19} />,   label: 'Portfolio X-Ray',    tag: 'AI'   },
   { id: 'couples',   icon: <Heart size={19} />,       label: "Couple's Planner",  tag: 'AI'   },
   { id: 'tax',       icon: <Calculator size={19} />,  label: 'Tax Wizard',         tag: 'AI'   },

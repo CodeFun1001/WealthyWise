@@ -526,7 +526,7 @@ Score each dimension strictly. A poor emergency fund should score 20-35. Missing
     );
 
     return (
-      <div ref={resultsRef} style={{ padding: 'clamp(18px, 4vw, 36px)', animation: 'fadeIn 0.4s ease', maxWidth: 960, margin: '0 auto' }}>
+      <div ref={resultsRef} style={{ padding: 'clamp(18px, 4vw, 36px)', animation: 'fadeIn 0.4s ease', margin: '0 auto' }}>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
@@ -682,7 +682,6 @@ Score each dimension strictly. A poor emergency fund should score 20-35. Missing
                       <Clock size={10} /> Do this week
                     </div>
                   </div>
-                  <ArrowRight size={15} color="var(--gold)" style={{ flexShrink: 0, marginTop: 4 }} />
                 </div>
               ))}
             </div>
